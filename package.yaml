@@ -43,6 +43,7 @@ library:
     - SecondHw.PrintResults
     - ThirdHw.RevInterpolation
     - ThirdHw.NumericalDiff
+    - ThirdHw.PrintResults
 executables:
   computingPracticum-exe:
     main: Main.hs

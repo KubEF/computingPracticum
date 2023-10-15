@@ -31,6 +31,7 @@ library
       SecondHw.PrintResults
       ThirdHw.RevInterpolation
       ThirdHw.NumericalDiff
+      ThirdHw.PrintResults
   other-modules:
       Paths_computingPracticum
   autogen-modules:
