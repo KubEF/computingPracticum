@@ -1,10 +1,21 @@
-module ThirdHw.PrintResults (main) where
+module ThirdHw.PrintResults (mainRevInterpol, mainNumDiff) where
 
 import Control.Monad qualified
+import Data.List (zip4)
+import ThirdHw.NumericalDiff (numericalDifferentiationFirst, numericalDifferentiationSecond)
 import ThirdHw.RevInterpolation (firstVariant, secondVariant)
 
 f :: (Floating a) => a -> a
 f x = sin x + x ** 2 / 2
+
+g :: (Floating a) => a -> a
+g x = exp $ 1.5 * x
+
+g' :: (Floating a) => a -> a
+g' x = 1.5 * g x
+
+g'' :: (Floating a) => a -> a
+g'' x = 1.5 * g' x
 
 showOneLineOfTable :: (Show a1, Show a2) => (a1, a2) -> IO ()
 showOneLineOfTable (a, b) = do
@@ -21,8 +32,8 @@ readN m1 = do
             readN m1
         else return n
 
-main :: IO ()
-main = do
+mainRevInterpol :: IO ()
+mainRevInterpol = do
     putStr "Тема: Задача обратного интерполирования\nВариант №11\nВведите число значений в таблице\nm + 1 = "
     m <- getLine
     let m1 = read m :: Int
@@ -69,5 +80,39 @@ printResults n listOfVar x eps = do
         then do
             putStrLn $ "Вторым методом на промежутке [" ++ show (fst $ head listOfVar) ++ ", " ++ show (fst $ last listOfVar) ++ "] значение не найдено"
         else do
-            putStrLn $ "Вторым методом корней нашлось: " ++ show (length secondVar) 
+            putStrLn $ "Вторым методом корней нашлось: " ++ show (length secondVar)
             mapM_ (\root -> putStrLn $ "X = " ++ show root ++ " \n|f(X) - F| = " ++ show (f root - x)) secondVar
+
+readH :: IO Double
+readH = do
+    putStr "Введите шаг\nh = "
+    hs <- getLine
+    let h = read hs :: Double
+    if h <= 0
+        then do
+            putStrLn "Вы ввели некорректное число. h должно быть положительным"
+            readH
+        else return h
+
+printOneLineOfTable :: (Show a1, Show a2, Floating a1) => a1 -> a2 -> a1 -> a1 -> IO ()
+printOneLineOfTable xi zeroValue oneValue twoValue = do
+    putStrLn $ show xi ++ "\t|\t" ++ show zeroValue ++ "\t|\t" ++ show oneValue ++ "\t|\t" ++ show (abs $ g' xi - oneValue) ++ "\t|\t" ++ show twoValue ++ "\t|\t" ++ show (abs $ g'' xi - twoValue)
+
+mainNumDiff :: IO ()
+mainNumDiff = do
+    putStr "Тема: Задача численного дифференцирования\nВариант №11\nВведите число значений в таблице\nm + 1 = "
+    m <- getLine
+    let m1 = read m :: Int
+    putStr "Введите начальную точку интервала\na = "
+    as <- getLine
+    let a = read as :: Double
+    h <- readH
+    let xis = [a + (fromIntegral i * h) | i <- [0 .. (m1 - 1)]]
+    -- mapM_ showOneLineOfTable listOfValuesFirst
+    let listOfValuesZero = map g xis
+    let listOfValuesFirst = numericalDifferentiationFirst listOfValuesZero h
+    let listOfValuesSecond = numericalDifferentiationSecond listOfValuesZero h
+    mapM_ (\(xi, zeroValue, oneValue, twoValue) -> printOneLineOfTable xi zeroValue oneValue twoValue) (zip4 xis listOfValuesZero listOfValuesFirst (0 : listOfValuesSecond ++ [0]))
+    putStr "Вы хотите продолжить с другими данными? Введите 'да' или 'y', если хотите\n"
+    goToAnotherCycle <- getLine
+    Control.Monad.when (goToAnotherCycle == "да" || goToAnotherCycle == "y") mainNumDiff
