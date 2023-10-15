@@ -17,7 +17,6 @@ data MyResult = MyResult
     }
 
 instance Show MyResult where
-    show :: MyResult -> String
     show (MyResult root delta disp counter) =
         "\t\tНайденный корень с точностью eps: "
             ++ show root

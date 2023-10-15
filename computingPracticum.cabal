@@ -26,19 +26,19 @@ source-repository head
 library
   exposed-modules:
       Lib
-      FirstHwEquation.CalculateFunc
-      SecondHwInterpolation.Interpolation
-  other-modules:
       FirstHw.CalculateFunc
       SecondHw.Interpolation
       SecondHw.PrintResults
-      ThirdHw.NumericalDiff
       ThirdHw.RevInterpolation
+      ThirdHw.NumericalDiff
+  other-modules:
       Paths_computingPracticum
   autogen-modules:
       Paths_computingPracticum
   hs-source-dirs:
       src
+  default-extensions:
+      ImportQualifiedPost
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints
   build-depends:
       base >=4.7 && <5
@@ -52,6 +52,8 @@ executable computingPracticum-exe
       Paths_computingPracticum
   hs-source-dirs:
       app
+  default-extensions:
+      ImportQualifiedPost
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       base >=4.7 && <5
@@ -67,6 +69,8 @@ test-suite computingPracticum-test
       Paths_computingPracticum
   hs-source-dirs:
       test
+  default-extensions:
+      ImportQualifiedPost
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       base >=4.7 && <5

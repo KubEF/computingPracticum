@@ -1,7 +1,7 @@
-module SecondHwInterpolation.PrintResults(main) where
+module SecondHw.PrintResults (main) where
 
-import SecondHw.Interpolation (polynomialLagrange, polynomialNewton)
 import qualified Control.Monad
+import SecondHw.Interpolation (polynomialLagrange, polynomialNewton)
 
 -- число значений в таблице m+1
 -- концы отрезка [a, b]
@@ -59,7 +59,7 @@ cicleOfReadRes m1 listOfVar = do
     goToAnotherCicle <- getLine
     Control.Monad.when (goToAnotherCicle == "да" || goToAnotherCicle == "y") $ cicleOfReadRes m1 listOfVar
 
-printResults :: (Eq a, Floating a, Show a) =>Int -> [(a, b)] -> a -> IO ()
+printResults :: (Eq a, Floating a, Show a) => Int -> [(a, b)] -> a -> IO ()
 printResults n listOfVar x = do
     -- Если очень хочется абстрагироваться от функции и работать именно со значениями из таблицы, то можно завести функцию
     -- let value listOfVar var = snd $ head $ filter (\x -> fst x == var) listOfVar

@@ -1,8 +1,11 @@
+{-# OPTIONS_GHC -Wno-unused-imports #-}
+
 module Main (main) where
 
-import FirstHwEquation.CalculateFunc ()
+import FirstHw.CalculateFunc
 import Lib (someFunc)
-import SecondHwInterpolation.Interpolation ()
+import SecondHw.PrintResults qualified
+import ThirdHw.RevInterpolation
 
 main :: IO ()
 main = someFunc
