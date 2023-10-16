@@ -30,7 +30,7 @@ resolver:
 #   - auto-update
 #   - wai
 packages:
-- .
+  - .
 # Dependency packages to be pulled from upstream that are not in the resolver.
 # These entries can reference officially published versions as well as
 # forks / in-progress versions pinned to a git hash. For example:
@@ -42,6 +42,9 @@ packages:
 #
 # extra-deps: []
 
+extra-deps:
+  - git: https://github.com/Xitian9/table-layout.git
+    commit: d2390efc1dcd2d915ef6a7e79cc154f8a7f2d060
 # Override default flag values for local packages and extra-deps
 # flags: {}
 
