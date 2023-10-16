@@ -18,10 +18,6 @@ g' x = 1.5 * g x
 g'' :: (Floating a) => a -> a
 g'' x = 1.5 * g' x
 
--- showOneLineOfTable :: (Show a1, Show a2) => (a1, a2) -> IO ()
--- showOneLineOfTable (a, b) = do
---     putStrLn $ "(" ++ show a ++ ",\n\t" ++ show b ++ ")"
-
 generateTableToArgsValues :: (Show a1, Show a2) => [(a1, a2)] -> String
 generateTableToArgsValues listOfVars =
     tableString $
@@ -55,16 +51,19 @@ cycleOfReadRes m1 listOfVar = do
 
 printResults :: Int -> [(Double, Double)] -> Double -> Double -> IO ()
 printResults n listOfVar x eps = do
-    -- Если очень хочется абстрагироваться от функции и работать именно со значениями из таблицы, то можно завести функцию
     let value listOfPairs var = fst $ head $ filter (\y -> snd y == var) listOfPairs
-    -- и передать вместо f частично применённую функцию (value listOfVar)
     let firstVar = firstVariant (value listOfVar) (map snd listOfVar) n x
     putStrLn "Первым методом нашёлся корень:"
     putStrLn $ "X = " ++ show firstVar ++ " \n|f(X) - F| = " ++ show (f firstVar - x)
     let secondVar = secondVariant f (map fst listOfVar) n (fst $ head listOfVar) (fst $ last listOfVar) eps x
     if null secondVar
         then do
-            putStrLn $ "Вторым методом на промежутке [" ++ show (fst $ head listOfVar) ++ ", " ++ show (fst $ last listOfVar) ++ "] значение не найдено"
+            putStrLn $
+                "Вторым методом на промежутке ["
+                    ++ show (fst $ head listOfVar)
+                    ++ ", "
+                    ++ show (fst $ last listOfVar)
+                    ++ "] значение не найдено"
         else do
             putStrLn $ "Вторым методом корней нашлось: " ++ show (length secondVar)
             mapM_ (\root -> putStrLn $ "X = " ++ show root ++ " \n|f(X) - F| = " ++ show (f root - x)) secondVar
@@ -104,13 +103,35 @@ generateTableToNumDiff :: (Show a1, Show a2, Floating a1) => [(a1, a2, a1, a1)] 
 generateTableToNumDiff values =
     tableString
         $ columnHeaderTableS
-            [numCol, numCol, numCol, numCol, numCol, numCol]
+            [numCol, numCol, numCol, numCol, numCol, numCol, numCol, numCol]
             unicodeRoundS
-            ( titlesH ["xi", "f(xi)", "f'(xi)_num", "|f(xi)_act - f(x_i)_num|", "f''(xi)_num", "|f''(xi)_act - f''(xi)_num|"]
+            ( titlesH
+                [ "xi"
+                , "f(xi)"
+                , "f'(xi)_num"
+                , "|f'(xi)_act - f'(x_i)_num|"
+                , "|f'(xi)_act - f'(x_i)_num|/|f'(xi)_act|"
+                , "f''(xi)_num"
+                , "|f''(xi)_act - f''(x_i)_num|"
+                , "|f''(xi)_act - f''(x_i)_num|/|f''(xi)_act|"
+                ]
             )
         $ map
             ( \(xi, fxi, f'xi, f''xi) ->
-                rowG [show xi, show fxi, show f'xi, show $ abs $ g' xi - f'xi, show f''xi, show $ abs $ g'' xi - f''xi]
+                let
+                    absError val dif = abs $ dif xi - val
+                    relError val dif = absError val dif / abs (dif xi)
+                in
+                    rowG
+                        [ show xi
+                        , show fxi
+                        , show f'xi
+                        , show $ absError f'xi g'
+                        , show $ relError f'xi g'
+                        , show f''xi
+                        , show $ absError f''xi g''
+                        , show $ relError f''xi g''
+                        ]
             )
             values
 
