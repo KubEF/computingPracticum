@@ -18,6 +18,9 @@ g' x = 1.5 * g x
 g'' :: (Floating a) => a -> a
 g'' x = 1.5 * g' x
 
+inf :: Double
+inf = 1 / 0
+
 generateTableToArgsValues :: (Show a1, Show a2) => [(a1, a2)] -> String
 generateTableToArgsValues listOfVars =
     tableString $
@@ -148,7 +151,7 @@ mainNumDiff = do
     let listOfValuesZero = map g xis
     let listOfValuesFirst = numericalDifferentiationFirst listOfValuesZero h
     let listOfValuesSecond = numericalDifferentiationSecond listOfValuesZero h
-    putStrLn $ generateTableToNumDiff (zip4 xis listOfValuesZero listOfValuesFirst (0 : listOfValuesSecond ++ [0]))
+    putStrLn $ generateTableToNumDiff (zip4 xis listOfValuesZero listOfValuesFirst (inf : listOfValuesSecond ++ [inf]))
     putStr "Вы хотите продолжить с другими данными? Введите 'да' или 'y', если хотите\n"
     goToAnotherCycle <- getLine
     when (goToAnotherCycle == "да" || goToAnotherCycle == "y") mainNumDiff
