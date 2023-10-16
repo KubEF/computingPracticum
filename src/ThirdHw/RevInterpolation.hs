@@ -1,7 +1,7 @@
 module ThirdHw.RevInterpolation (firstVariant, secondVariant) where
 
-import FirstHw.CalculateFunc (root, rootSeparation, secantsMethod)
-import SecondHw.Interpolation (polynomialLagrange)
+import FirstHw.CalculateFunc
+import SecondHw.Interpolation
 
 firstVariant
     :: (Eq a, Floating a)

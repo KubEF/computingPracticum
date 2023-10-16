@@ -1,7 +1,8 @@
-module SecondHw.PrintResults (main) where
+module SecondHw.PrintResults (mainInterpolation) where
 
-import qualified Control.Monad
-import SecondHw.Interpolation (polynomialLagrange, polynomialNewton)
+import Control.Monad (when)
+import SecondHw.Interpolation
+import Text.Layout.Table
 
 -- число значений в таблице m+1
 -- концы отрезка [a, b]
@@ -12,9 +13,11 @@ import SecondHw.Interpolation (polynomialLagrange, polynomialNewton)
 f :: (Floating a) => a -> a
 f x = sin x + (x ** 2) / 2
 
-showOneLineOfTable :: (Show a1, Show a2) => (a1, a2) -> IO ()
-showOneLineOfTable (a, b) = do
-    putStrLn $ "(" ++ show a ++ ",\n\t" ++ show b ++ ")"
+generateTable :: (Show a1, Show a2) => [(a1, a2)] -> String
+generateTable listOfValues =
+    tableString $
+        columnHeaderTableS [numCol, numCol] unicodeRoundS (titlesH ["xi", "f(xi)"]) $
+            map (\(x, fx) -> rowG [show x, show fx]) listOfValues
 
 readN :: Int -> IO Int
 readN m1 = do
@@ -27,8 +30,8 @@ readN m1 = do
             readN m1
         else return n
 
-main :: IO ()
-main = do
+mainInterpolation :: IO ()
+mainInterpolation = do
     putStr "Тема: Задача алгебраического интерполирования\nВариант №11\nВведите число значений в таблице\nm + 1 = "
     m <- getLine
     let m1 = read m :: Int
@@ -44,20 +47,19 @@ main = do
             , j <- [0 .. (m1 - 1)]
             , let x = a + fromIntegral j * h
             ]
-    putStrLn "Таблица значений функции в формате: \n(x,\n\t f(x))"
-    mapM_ showOneLineOfTable listOfVar
-    cicleOfReadRes m1 listOfVar
+    putStrLn $ generateTable listOfVar
+    cycleOfReadRes m1 listOfVar
 
-cicleOfReadRes :: Int -> [(Double, b)] -> IO ()
-cicleOfReadRes m1 listOfVar = do
+cycleOfReadRes :: Int -> [(Double, b)] -> IO ()
+cycleOfReadRes m1 listOfVar = do
     putStr "Введите точку интерполирования \nx = "
     xt <- getLine
     let x = read xt :: Double
     n <- readN m1
     printResults n listOfVar x
     putStr "Вы хотите продолжить с другими данными? Введите 'да' или 'y', если хотите\n"
-    goToAnotherCicle <- getLine
-    Control.Monad.when (goToAnotherCicle == "да" || goToAnotherCicle == "y") $ cicleOfReadRes m1 listOfVar
+    goToAnotherCycle <- getLine
+    when (goToAnotherCycle == "да" || goToAnotherCycle == "y") $ cycleOfReadRes m1 listOfVar
 
 printResults :: (Eq a, Floating a, Show a) => Int -> [(a, b)] -> a -> IO ()
 printResults n listOfVar x = do

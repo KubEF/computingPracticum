@@ -1,7 +1,4 @@
-{-# OPTIONS_GHC -Wno-name-shadowing #-}
-{-# OPTIONS_GHC -Wno-unused-top-binds #-}
-
-module FirstHw.CalculateFunc (rootSeparation, bisectionMethod, newtonMethod, newtonMethodModified, secantsMethod, MyResult, root) where
+module FirstHw.CalculateFunc (rootSeparation, bisectionMethod, newtonMethod, newtonMethodModified, secantsMethod, root, delta, discrepancy, counter) where
 
 f' :: (Floating a) => a -> a
 f' x = 4 * x - log 2 * 2 ** x
@@ -50,10 +47,10 @@ rootSeparation
 rootSeparation a b f n = helper a b f h
     where
         h = (b - a) / n
-        helper a b f h
-            | a >= b = []
-            | (f a * f (a + h)) <= 0 = (a, a + h) : helper (a + h) b f h
-            | otherwise = helper (a + h) b f h
+        helper a' b' func h'
+            | a' >= b' = []
+            | (func a' * func (a' + h')) <= 0 = (a', a' + h') : helper (a' + h') b' func h'
+            | otherwise = helper (a' + h') b' func h'
 
 bisectionMethod
     :: Double
@@ -85,13 +82,13 @@ newtonMethod
 newtonMethod a b f epsilon = helper x f epsilon 0
     where
         x = (a + b) / 2
-        helper x f epsilon counter
+        helper arg func eps counter
             -- \| f' x == 0 || f x * f'' x <= 0 = helper (findNewtonStartingPoints f a b (10 ** (-6))) f epsilon counter
-            | f x_next == 0 = MyResult x_next 0 0 (counter + 1)
-            | abs (x_next - x) <= epsilon = MyResult x_next (abs (x_next - x)) (abs (f x_next)) (counter + 1)
-            | otherwise = helper x_next f epsilon (counter + 1)
+            | func x_next == 0 = MyResult x_next 0 0 (counter + 1)
+            | abs (x_next - arg) <= eps = MyResult x_next (abs (x_next - arg)) (abs (func x_next)) (counter + 1)
+            | otherwise = helper x_next func eps (counter + 1)
             where
-                x_next = x - f x / f' x
+                x_next = arg - func arg / f' arg
 
 newtonMethodModified
     :: Double
@@ -102,12 +99,12 @@ newtonMethodModified
 newtonMethodModified a b f epsilon = helper x f epsilon 0 x
     where
         x = (a + b) / 2
-        helper x f epsilon counter x_0
-            | f x_next == 0 = MyResult x_next 0 0 (counter + 1)
-            | abs (x_next - x) <= epsilon = MyResult x_next (abs (x_next - x)) (abs (f x_next)) (counter + 1)
-            | otherwise = helper x_next f epsilon (counter + 1) x
+        helper arg func eps counter x_0
+            | func x_next == 0 = MyResult x_next 0 0 (counter + 1)
+            | abs (x_next - arg) <= eps = MyResult x_next (abs (x_next - arg)) (abs (func x_next)) (counter + 1)
+            | otherwise = helper x_next func eps (counter + 1) arg
             where
-                x_next = x - f x / f' x_0
+                x_next = arg - func arg / f' x_0
 
 secantsMethod
     :: Double
@@ -117,9 +114,9 @@ secantsMethod
     -> MyResult
 secantsMethod a b f epsilon = helper a b f epsilon 0
     where
-        helper x x_pred f epsilon counter
-            | f x_next == 0 = MyResult x_next 0 0 (counter + 1)
-            | abs (x_next - x) < epsilon = MyResult x_next (abs (x_next - x)) (abs (f x_next)) (counter + 1)
-            | otherwise = helper x_next x f epsilon (counter + 1)
+        helper x x_pred func eps counter
+            | func x_next == 0 = MyResult x_next 0 0 (counter + 1)
+            | abs (x_next - x) < eps = MyResult x_next (abs (x_next - x)) (abs (func x_next)) (counter + 1)
+            | otherwise = helper x_next x func eps (counter + 1)
             where
-                x_next = x - (f x / (f x - f x_pred)) * (x - x_pred)
+                x_next = x - (func x / (func x - func x_pred)) * (x - x_pred)

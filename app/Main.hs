@@ -1,8 +1,11 @@
-module Main where
+module Main (main) where
 
-import Lib
-import SecondHw.PrintResults qualified
-import ThirdHw.PrintResults qualified
+import Lib ()
+import SecondHw.PrintResults (mainInterpolation)
+import ThirdHw.PrintResults (mainNumDiff, mainRevInterpol)
 
-main = someFunc
-
+main :: IO ()
+main = do
+    mainInterpolation
+    mainRevInterpol
+    mainNumDiff
