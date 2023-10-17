@@ -69,7 +69,7 @@ printResults n listOfVar x eps = do
                     ++ "] значение не найдено"
         else do
             putStrLn $ "Вторым методом корней нашлось: " ++ show (length secondVar)
-            mapM_ (\root -> putStrLn $ "X = " ++ show root ++ " \n|f(X) - F| = " ++ show (f root - x)) secondVar
+            mapM_ (\root -> putStrLn $ "X = " ++ show root ++ " \n|f(X) - F| = " ++ show (abs $ f root - x)) secondVar
 
 mainRevInterpol :: IO ()
 mainRevInterpol = do
