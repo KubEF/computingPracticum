@@ -30,7 +30,7 @@ ghc-options:
   - -Widentities
   - -Wincomplete-record-updates
   - -Wincomplete-uni-patterns
-  - -Wmissing-export-lists
+  # - -Wmissing-export-lists
   - -Wmissing-home-modules
   - -Wpartial-fields
   - -Wredundant-constraints
@@ -47,6 +47,8 @@ library:
     - ThirdHw.RevInterpolation
     - ThirdHw.NumericalDiff
     - ThirdHw.PrintResults
+    - FourthHw.Integrals
+    - FourthHw.PrintResults
 executables:
   computingPracticum-exe:
     main: Main.hs
