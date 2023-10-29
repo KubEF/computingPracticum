@@ -43,7 +43,7 @@ generateTable listOfValues actVal =
             [numCol, numCol, numCol]
             unicodeRoundS
             ( titlesH
-                [ "Формула / Объект"
+                [ "Метод"
                 , "Получившееся значение интеграла"
                 , "Абсолютная фактическая погрешность"
                 ]
@@ -87,6 +87,6 @@ mainIntegration = do
         , (p1, primP1, "f(x) = x")
         , (p2, primP2, "f(x) = 12.6*x^2 + 6.4*x + 3.2")
         , (p3, primP3, "f(x) = x^3 - 7*x + 7")
-        , (f, primF, "f(x) = (e^x / 2) * (x * (sin x - cos x) + cos x)")
+        , (f, primF, "f(x) = x * exp x * sin x")
         ]
     mainIntegration
